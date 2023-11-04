@@ -1,0 +1,3 @@
+klooni 1
+klooni 2
+klooni 3
