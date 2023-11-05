@@ -1,6 +1,6 @@
 import unittest
 from varasto import Varasto
-
+#Joudut huomioimaan ainakin tapaukset, joissa varastoon yritetään laittaa liikaa tavaraa ja varastosta yritetään ottaa enemmän kuin siellä on
 
 class TestVarasto(unittest.TestCase):
     def setUp(self):
@@ -38,3 +38,38 @@ class TestVarasto(unittest.TestCase):
 
         # varastossa pitäisi olla tilaa 10 - 8 + 2 eli 4
         self.assertAlmostEqual(self.varasto.paljonko_mahtuu(), 4)
+
+    def test_lisaa_negatiivinen_maara_ei_muuta_saldoa(self):
+        self.varasto.lisaa_varastoon(8)
+        self.varasto.lisaa_varastoon(-2)
+        self.assertAlmostEqual(self.varasto.saldo, 8)
+
+    def test_lisaa_liikaa_tayttaa_koko_varaston(self):
+        self.varasto.lisaa_varastoon(100)
+        self.assertAlmostEqual(self.varasto.saldo, 10)
+
+    def test_ota_negatiivinen_maara_ei_muuta_saldoa(self):
+        self.varasto.lisaa_varastoon(8)
+        self.varasto.ota_varastosta(-2)
+        self.assertAlmostEqual(self.varasto.saldo, 8)
+
+    def test_ota_liikaa_palauttaa_koko_saldon(self):
+        self.varasto.lisaa_varastoon(5)
+        self.assertAlmostEqual(self.varasto.ota_varastosta(100), 5)
+
+    def test_ota_liikaa_tyhjentaa_varaston(self):
+        self.varasto.lisaa_varastoon(5)
+        self.varasto.ota_varastosta(100)
+        self.assertAlmostEqual(self.varasto.saldo, 0)
+
+    def test_negatiivinen_tilavuus_nollataan(self):
+        self.assertAlmostEqual(Varasto(-10).tilavuus, 0)
+
+    def test_negatiivinen_alkusaldo_nollataan(self):
+        self.assertAlmostEqual(Varasto(10, -10).saldo, 0)
+
+    def test_tilavuus_alkusaldo(self):
+        self.assertAlmostEqual(Varasto(10, 10).saldo, 10)
+
+    def test_tulostus(self):
+        self.assertAlmostEqual(str(self.varasto), "saldo = 0, vielä tilaa 10")
